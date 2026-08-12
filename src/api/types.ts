@@ -32,3 +32,16 @@ export interface BookingCheckResult {
 export function deriveSafeToBook(result: BookingCheckResult): boolean {
   return !result.is_dnu && !result.is_bad_broker && result.warnings.length === 0;
 }
+
+export interface User {
+  id: number;
+  email: string;
+  name: string | null;
+  picture_url: string | null;
+}
+
+export interface AuthResponse {
+  access_token: string;
+  token_type: string;
+  user: User;
+}

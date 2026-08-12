@@ -40,6 +40,50 @@
   background: var(--danger);
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.link-button {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-size: 13px;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.login-page {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-panel {
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+}
+
+.login-panel h1 {
+  font-size: 22px;
+  margin: 0 0 8px;
+}
+
+.login-panel p {
+  margin-bottom: 24px;
+}
+
+.login-button {
+  display: flex;
+  justify-content: center;
+}
+
 .panel {
   background: var(--surface);
   border: 1px solid var(--border);

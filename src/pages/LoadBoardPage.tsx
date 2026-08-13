@@ -275,6 +275,7 @@ export function LoadBoardPage() {
                 <th>Equipment</th>
                 <th>Weight</th>
                 <th>Source</th>
+                <th>Posted by</th>
                 <th>Posted</th>
               </tr>
             </thead>
@@ -291,6 +292,7 @@ export function LoadBoardPage() {
                   <td>{load.equipment_type ? EQUIPMENT_LABELS[load.equipment_type as keyof typeof EQUIPMENT_LABELS] ?? load.equipment_type : "—"}</td>
                   <td>{load.weight_lbs ? `${load.weight_lbs.toLocaleString()} lbs` : "—"}</td>
                   <td>{load.source_name ?? "—"}</td>
+                  <td>{load.posted_by ?? "—"}</td>
                   <td>{new Date(load.created_at).toLocaleString()}</td>
                 </tr>
               ))}

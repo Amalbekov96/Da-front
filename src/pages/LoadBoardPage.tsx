@@ -18,6 +18,23 @@ function searchLabel(s: Search): string {
   return `${s.name} (${s.origin_filter || "Any"} → ${s.destination_filter || "Any"})`;
 }
 
+function renderPostedBy(load: LoadRow) {
+  if (!load.posted_by) return "—";
+  // Prefer a public username (works as a plain web link); fall back to the numeric
+  // user id via the tg:// scheme, which only opens if a Telegram app is installed.
+  const href = load.posted_by_username
+    ? `https://t.me/${load.posted_by_username}`
+    : load.posted_by_user_id
+      ? `tg://user?id=${load.posted_by_user_id}`
+      : null;
+  if (!href) return load.posted_by;
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="posted-by-link">
+      {load.posted_by}
+    </a>
+  );
+}
+
 interface SearchFormState {
   name: string;
   origin: string;
@@ -292,7 +309,7 @@ export function LoadBoardPage() {
                   <td>{load.equipment_type ? EQUIPMENT_LABELS[load.equipment_type as keyof typeof EQUIPMENT_LABELS] ?? load.equipment_type : "—"}</td>
                   <td>{load.weight_lbs ? `${load.weight_lbs.toLocaleString()} lbs` : "—"}</td>
                   <td>{load.source_name ?? "—"}</td>
-                  <td>{load.posted_by ?? "—"}</td>
+                  <td>{renderPostedBy(load)}</td>
                   <td>{new Date(load.created_at).toLocaleString()}</td>
                 </tr>
               ))}

@@ -56,6 +56,15 @@
   cursor: pointer;
 }
 
+.posted-by-link {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.posted-by-link:hover {
+  text-decoration: underline;
+}
+
 .login-page {
   min-height: 100svh;
   display: flex;

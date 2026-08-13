@@ -126,6 +126,8 @@ export interface LoadRow {
   miles: number | null;
   raw_text: string | null;
   posted_by: string | null;
+  posted_by_username: string | null;
+  posted_by_user_id: number | null;
   created_at: string;
   match_quality: "full" | "origin_only" | null;
 }

@@ -33,15 +33,106 @@ export function deriveSafeToBook(result: BookingCheckResult): boolean {
   return !result.is_dnu && !result.is_bad_broker && result.warnings.length === 0;
 }
 
+// Mirrors app/db/models.py:ROLES
+export type Role = "user" | "manager" | "admin";
+
+export interface Mc {
+  id: number;
+  mc_number: string;
+  name: string | null;
+  dot_number: string | null;
+}
+
 export interface User {
   id: number;
   email: string;
   name: string | null;
   picture_url: string | null;
+  role: Role;
+  active: boolean;
+  mcs: Mc[];
 }
 
 export interface AuthResponse {
   access_token: string;
   token_type: string;
   user: User;
+}
+
+// Mirrors app/db/models.py Source
+export type SourceType = "telegram_group" | "broker_api";
+
+export interface Source {
+  id: number;
+  name: string;
+  type: SourceType;
+  active: boolean;
+}
+
+// Mirrors app/booking/constants.py:EQUIPMENT_TYPES — the "popular truck types"
+export const EQUIPMENT_TYPES = ["van", "reefer", "flatbed", "step_deck", "power_only", "box_truck", "hotshot"] as const;
+export type EquipmentType = (typeof EQUIPMENT_TYPES)[number];
+
+export const EQUIPMENT_LABELS: Record<EquipmentType, string> = {
+  van: "Dry Van",
+  reefer: "Reefer",
+  flatbed: "Flatbed",
+  step_deck: "Step Deck",
+  power_only: "Power Only",
+  box_truck: "Box Truck",
+  hotshot: "Hotshot",
+};
+
+export interface Search {
+  id: number;
+  user_id: number;
+  mc_id: number | null;
+  name: string;
+  origin_filter: string | null;
+  destination_filter: string | null;
+  equipment_type: string | null;
+  pickup_date_from: string | null;
+  pickup_date_to: string | null;
+  active: boolean;
+  source_ids: number[];
+  created_at: string;
+}
+
+export interface SearchRequest {
+  name: string;
+  origin_filter?: string | null;
+  destination_filter?: string | null;
+  equipment_type?: string | null;
+  pickup_date_from?: string | null;
+  pickup_date_to?: string | null;
+  mc_id?: number | null;
+  source_ids?: number[];
+}
+
+export interface LoadRow {
+  id: number;
+  source: string;
+  source_name: string | null;
+  origin: string | null;
+  destination: string | null;
+  pickup_date: string | null;
+  equipment_type: string | null;
+  weight_lbs: number | null;
+  rate: string | null;
+  miles: number | null;
+  raw_text: string | null;
+  created_at: string;
+  match_quality: "full" | "origin_only" | null;
+}
+
+export interface LoadFilters {
+  origin?: string;
+  destination?: string;
+  equipment_type?: string;
+  date_from?: string;
+  date_to?: string;
+  source?: string;
+  mc_id?: number;
+  search_id?: number;
+  since_id?: number;
 }

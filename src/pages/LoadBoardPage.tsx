@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createSearch, deleteSearch, listLoads, listMcs, listSearches, listSources, updateSearch } from "../api/client";
 import { ApiError } from "../api/client";
 import { EQUIPMENT_LABELS, EQUIPMENT_TYPES, type LoadRow, type Mc, type Search, type Source } from "../api/types";
+import { MultiSelectDropdown } from "../components/MultiSelectDropdown";
 
 const POLL_INTERVAL_MS = 7000;
 const HIGHLIGHT_MS = 6000;
@@ -154,13 +155,6 @@ export function LoadBoardPage() {
     await refreshMeta();
   }
 
-  function toggleSourceId(id: number) {
-    setForm((f) => ({
-      ...f,
-      source_ids: f.source_ids.includes(id) ? f.source_ids.filter((s) => s !== id) : [...f.source_ids, id],
-    }));
-  }
-
   return (
     <div className="load-board">
       <section className="panel searches-panel">
@@ -237,6 +231,12 @@ export function LoadBoardPage() {
                   </option>
                 ))}
               </select>
+              <MultiSelectDropdown
+                label="Sources"
+                options={sources.map((s) => ({ id: s.id, label: s.name }))}
+                selectedIds={form.source_ids}
+                onChange={(ids) => setForm((f) => ({ ...f, source_ids: ids }))}
+              />
             </div>
 
             <div className="equipment-picker">
@@ -249,26 +249,6 @@ export function LoadBoardPage() {
                 >
                   {EQUIPMENT_LABELS[eq]}
                 </button>
-              ))}
-            </div>
-
-            <div className="source-picker-header">
-              <span className="muted">
-                Sources ({form.source_ids.length}/{sources.length} selected)
-              </span>
-              <button type="button" className="link-button" onClick={() => setForm((f) => ({ ...f, source_ids: sources.map((s) => s.id) }))}>
-                Select all
-              </button>
-              <button type="button" className="link-button" onClick={() => setForm((f) => ({ ...f, source_ids: [] }))}>
-                Clear
-              </button>
-            </div>
-            <div className="source-picker">
-              {sources.map((s) => (
-                <label key={s.id} className="source-checkbox">
-                  <input type="checkbox" checked={form.source_ids.includes(s.id)} onChange={() => toggleSourceId(s.id)} />
-                  {s.name}
-                </label>
               ))}
             </div>
 

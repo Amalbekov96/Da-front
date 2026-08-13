@@ -26,7 +26,7 @@ export function LoginPage() {
   return (
     <div className="login-page">
       <div className="panel login-panel">
-        <h1>Dispatcher Assistant</h1>
+        <h1>DA</h1>
         <p className="muted">Sign in to check brokers and view the load board.</p>
 
         <form className="password-form" onSubmit={handlePasswordSubmit}>

@@ -18,7 +18,7 @@ export function AppShell() {
   return (
     <div className="shell">
       <aside className="sidebar">
-        <div className="sidebar-brand">Dispatcher Assistant</div>
+        <div className="sidebar-brand">DA</div>
         <nav className="sidebar-nav">
           {navItems
             .filter((item) => item.show)

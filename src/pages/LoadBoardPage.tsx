@@ -13,10 +13,16 @@ function formatRate(rate: string | null): string {
   return Number.isFinite(n) ? `$${n.toFixed(0)}` : "—";
 }
 
+function searchLabel(s: Search): string {
+  return `${s.name} (${s.origin_filter || "Any"} → ${s.destination_filter || "Any"})`;
+}
+
 interface SearchFormState {
   name: string;
   origin: string;
   destination: string;
+  origin_deadhead: string;
+  destination_deadhead: string;
   equipment_type: string;
   date_from: string;
   date_to: string;
@@ -28,6 +34,8 @@ const emptyForm: SearchFormState = {
   name: "",
   origin: "",
   destination: "",
+  origin_deadhead: "",
+  destination_deadhead: "",
   equipment_type: "",
   date_from: "",
   date_to: "",
@@ -118,6 +126,8 @@ export function LoadBoardPage() {
         name: form.name || `${form.origin || "Any"} → ${form.destination || "Any"}`,
         origin_filter: form.origin || null,
         destination_filter: form.destination || null,
+        origin_deadhead_miles: form.origin_deadhead ? Number(form.origin_deadhead) : null,
+        destination_deadhead_miles: form.destination_deadhead ? Number(form.destination_deadhead) : null,
         equipment_type: form.equipment_type || null,
         pickup_date_from: form.date_from || null,
         pickup_date_to: form.date_to || null,
@@ -158,7 +168,7 @@ export function LoadBoardPage() {
           {activeSearches.map((s) => (
             <div key={s.id} className={`search-pill${selectedSearchId === s.id ? " active" : ""}`}>
               <button type="button" onClick={() => setSelectedSearchId(s.id)}>
-                {s.name}
+                {searchLabel(s)}
               </button>
               <button type="button" className="search-pill-close" title="Close search" onClick={() => handleCloseSearch(s.id)}>
                 ×
@@ -187,9 +197,27 @@ export function LoadBoardPage() {
               <input placeholder="Search name (optional)" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
               <input placeholder="Origin (e.g. UT)" value={form.origin} onChange={(e) => setForm({ ...form, origin: e.target.value })} />
               <input
+                type="number"
+                min="0"
+                placeholder="± mi"
+                className="deadhead-input"
+                title="Deadhead radius around the origin, in miles"
+                value={form.origin_deadhead}
+                onChange={(e) => setForm({ ...form, origin_deadhead: e.target.value })}
+              />
+              <input
                 placeholder="Destination (e.g. TX)"
                 value={form.destination}
                 onChange={(e) => setForm({ ...form, destination: e.target.value })}
+              />
+              <input
+                type="number"
+                min="0"
+                placeholder="± mi"
+                className="deadhead-input"
+                title="Deadhead radius around the destination, in miles"
+                value={form.destination_deadhead}
+                onChange={(e) => setForm({ ...form, destination_deadhead: e.target.value })}
               />
             </div>
             <div className="search-form-row">
@@ -224,6 +252,17 @@ export function LoadBoardPage() {
               ))}
             </div>
 
+            <div className="source-picker-header">
+              <span className="muted">
+                Sources ({form.source_ids.length}/{sources.length} selected)
+              </span>
+              <button type="button" className="link-button" onClick={() => setForm((f) => ({ ...f, source_ids: sources.map((s) => s.id) }))}>
+                Select all
+              </button>
+              <button type="button" className="link-button" onClick={() => setForm((f) => ({ ...f, source_ids: [] }))}>
+                Clear
+              </button>
+            </div>
             <div className="source-picker">
               {sources.map((s) => (
                 <label key={s.id} className="source-checkbox">
@@ -234,7 +273,7 @@ export function LoadBoardPage() {
             </div>
 
             {formError && <div className="alert alert-error">{formError}</div>}
-            <button type="submit" className="primary-button">
+            <button type="submit" className="primary-button search-submit-button">
               Save search
             </button>
           </form>

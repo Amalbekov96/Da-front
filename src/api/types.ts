@@ -93,6 +93,8 @@ export interface Search {
   equipment_type: string | null;
   pickup_date_from: string | null;
   pickup_date_to: string | null;
+  origin_deadhead_miles: number | null;
+  destination_deadhead_miles: number | null;
   active: boolean;
   source_ids: number[];
   created_at: string;
@@ -105,6 +107,8 @@ export interface SearchRequest {
   equipment_type?: string | null;
   pickup_date_from?: string | null;
   pickup_date_to?: string | null;
+  origin_deadhead_miles?: number | null;
+  destination_deadhead_miles?: number | null;
   mc_id?: number | null;
   source_ids?: number[];
 }

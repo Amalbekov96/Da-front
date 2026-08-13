@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { createSearch, deleteSearch, listLoads, listMcs, listSearches, listSources, updateSearch } from "../api/client";
+import { createSearch, deleteSearch, listLoads, listMcs, listSearches, listSources } from "../api/client";
 import { ApiError } from "../api/client";
 import { EQUIPMENT_LABELS, EQUIPMENT_TYPES, type LoadRow, type Mc, type Search, type Source } from "../api/types";
 import { MultiSelectDropdown } from "../components/MultiSelectDropdown";
@@ -161,12 +161,8 @@ export function LoadBoardPage() {
   }
 
   async function handleCloseSearch(id: number) {
-    await updateSearch(id, { active: false });
-    if (selectedSearchId === id) setSelectedSearchId(null);
-    await refreshMeta();
-  }
-
-  async function handleDeleteSearch(id: number) {
+    // Closing a search permanently deletes it (and any board loads that were only
+    // there because of it) — there's no separate "closed but kept" state anymore.
     await deleteSearch(id);
     if (selectedSearchId === id) setSelectedSearchId(null);
     await refreshMeta();
@@ -181,7 +177,12 @@ export function LoadBoardPage() {
               <button type="button" onClick={() => setSelectedSearchId(s.id)}>
                 {searchLabel(s)}
               </button>
-              <button type="button" className="search-pill-close" title="Close search" onClick={() => handleCloseSearch(s.id)}>
+              <button
+                type="button"
+                className="search-pill-close"
+                title="Delete this search and its board results"
+                onClick={() => handleCloseSearch(s.id)}
+              >
                 ×
               </button>
             </div>
@@ -318,17 +319,6 @@ export function LoadBoardPage() {
         )}
       </section>
 
-      {activeSearches.length > 0 && (
-        <p className="muted delete-hint">
-          {activeSearches
-            .filter((s) => selectedSearchId === s.id)
-            .map((s) => (
-              <button key={s.id} type="button" className="link-button" onClick={() => handleDeleteSearch(s.id)}>
-                Delete "{s.name}" permanently
-              </button>
-            ))}
-        </p>
-      )}
     </div>
   );
 }

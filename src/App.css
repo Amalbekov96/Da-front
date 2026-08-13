@@ -706,10 +706,6 @@
   color: var(--warning-text);
 }
 
-.delete-hint {
-  margin: 0;
-}
-
 /* ---- login page password form ---- */
 
 .password-form {

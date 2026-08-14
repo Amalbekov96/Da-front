@@ -19,7 +19,8 @@ export type Permission =
   | "sources.manage"
   | "searches.manage_own"
   | "searches.view_all"
-  | "loads.view";
+  | "loads.view"
+  | "telegram_dialogs.manage";
 
 const ALL_PERMISSIONS: Permission[] = [
   "users.view",
@@ -38,6 +39,7 @@ const ALL_PERMISSIONS: Permission[] = [
   "searches.manage_own",
   "searches.view_all",
   "loads.view",
+  "telegram_dialogs.manage",
 ];
 
 const ROLE_PERMISSIONS: Record<Role, Permission[]> = {

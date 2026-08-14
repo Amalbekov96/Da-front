@@ -69,6 +69,17 @@ export interface Source {
   active: boolean;
 }
 
+// Mirrors app/db/models.py TelegramDialog
+export interface TelegramDialog {
+  id: number;
+  chat_id: number;
+  name: string | null;
+  kind: "group" | "channel";
+  username: string | null;
+  participants_count: number | null;
+  fetched_at: string;
+}
+
 // Mirrors app/booking/constants.py:EQUIPMENT_TYPES — the "popular truck types"
 export const EQUIPMENT_TYPES = ["van", "reefer", "flatbed", "step_deck", "power_only", "box_truck", "hotshot"] as const;
 export type EquipmentType = (typeof EQUIPMENT_TYPES)[number];

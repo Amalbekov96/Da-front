@@ -7,6 +7,7 @@ import type {
   Search,
   SearchRequest,
   Source,
+  TelegramDialog,
   User,
 } from "./types";
 
@@ -173,4 +174,18 @@ export function deleteSearch(id: number): Promise<void> {
 
 export function listLoads(filters: LoadFilters = {}): Promise<LoadRow[]> {
   return request(`/loads${query(filters as Record<string, string | number | undefined>)}`);
+}
+
+// --- telegram dialogs ------------------------------------------------------
+
+export function listTelegramDialogs(): Promise<TelegramDialog[]> {
+  return request("/telegram-dialogs");
+}
+
+export function fetchTelegramDialogs(): Promise<TelegramDialog[]> {
+  return request("/telegram-dialogs/fetch", { method: "POST" });
+}
+
+export function deleteTelegramDialog(id: number): Promise<void> {
+  return request(`/telegram-dialogs/${id}`, { method: "DELETE" });
 }

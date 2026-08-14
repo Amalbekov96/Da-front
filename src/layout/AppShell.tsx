@@ -13,6 +13,7 @@ export function AppShell() {
     { to: "/users", label: "Users", show: hasPermission(user.role, "users.view") },
     { to: "/mcs", label: "MCs", show: hasPermission(user.role, "mcs.view_all") },
     { to: "/sources", label: "Sources", show: hasPermission(user.role, "sources.view_all") },
+    { to: "/telegram-groups", label: "Telegram Groups", show: hasPermission(user.role, "telegram_dialogs.manage") },
   ];
 
   return (

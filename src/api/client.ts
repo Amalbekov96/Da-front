@@ -231,7 +231,7 @@ export function updateLogisticsCompany(id: number, body: UpdateLogisticsCompanyR
 // --- drivers ---------------------------------------------------------------
 
 export interface DriverRequest {
-  carrier_id: number;
+  carrier_id?: number | null;
   name: string;
   phone?: string | null;
   truck_number?: string | null;
@@ -258,7 +258,7 @@ export function deleteDriver(id: number): Promise<void> {
 // --- dispatchers -------------------------------------------------------------
 
 export interface DispatcherRequest {
-  carrier_id: number;
+  carrier_id?: number | null;
   name: string;
   phone?: string | null;
   extension?: string | null;

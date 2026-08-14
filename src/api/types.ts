@@ -201,7 +201,7 @@ export interface LogisticsCompany {
 
 export interface Driver {
   id: number;
-  carrier_id: number;
+  carrier_id: number | null;
   carrier_name: string | null;
   name: string;
   phone: string | null;
@@ -215,7 +215,7 @@ export interface Driver {
 
 export interface Dispatcher {
   id: number;
-  carrier_id: number;
+  carrier_id: number | null;
   carrier_name: string | null;
   name: string;
   phone: string | null;

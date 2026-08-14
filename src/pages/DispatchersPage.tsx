@@ -68,6 +68,18 @@ export function DispatchersPage() {
     await refresh(query);
   }
 
+  async function handleCarrierChange(dispatcher: Dispatcher, newCarrierId: string) {
+    if (!newCarrierId) return;
+    await updateDispatcher(dispatcher.id, {
+      carrier_id: Number(newCarrierId),
+      name: dispatcher.name,
+      phone: dispatcher.phone,
+      extension: dispatcher.extension,
+      email: dispatcher.email,
+    });
+    await refresh(query);
+  }
+
   async function handleDelete(id: number) {
     if (!window.confirm("Delete this dispatcher?")) return;
     try {
@@ -131,7 +143,18 @@ export function DispatchersPage() {
                     onBlur={(e) => e.target.value !== d.name && handleFieldChange(d, "name", e.target.value)}
                   />
                 </td>
-                <td>{d.carrier_name ?? "—"}</td>
+                <td>
+                  <select value={d.carrier_id ?? ""} onChange={(e) => handleCarrierChange(d, e.target.value)}>
+                    <option value="" disabled>
+                      Unassigned
+                    </option>
+                    {carriers.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name ?? c.mc_number}
+                      </option>
+                    ))}
+                  </select>
+                </td>
                 <td>
                   <input
                     defaultValue={d.phone ?? ""}

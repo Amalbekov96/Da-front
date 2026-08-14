@@ -22,6 +22,15 @@ export interface BookingCheckResult {
   is_bad_broker: boolean;
   dnu_reason: string | null;
 
+  // Rate-confirmation tracking fields — status/notes are your own working tags;
+  // factoring_grade/loads_made_count come from RTS once that's wired up, otherwise
+  // just whatever's already saved on this logistics company.
+  status: string | null;
+  notes: string | null;
+  factoring_grade: string | null;
+  loads_made_count: number | null;
+  rts_checked_at: string | null;
+
   times_hauled: number;
   avg_rate: number | null;
   lane_history: LaneHistoryEntry[];
@@ -36,11 +45,17 @@ export function deriveSafeToBook(result: BookingCheckResult): boolean {
 // Mirrors app/db/models.py:ROLES
 export type Role = "user" | "manager" | "admin";
 
+// Also "Carrier" in the rate-confirmation tracking feature — same entity.
 export interface Mc {
   id: number;
   mc_number: string;
   name: string | null;
   dot_number: string | null;
+  phone: string | null;
+  email: string | null;
+  notes: string | null;
+  load_count: number;
+  avg_rpm_7d: number | null;
 }
 
 export interface User {
@@ -153,4 +168,122 @@ export interface LoadFilters {
   mc_id?: number;
   search_id?: number;
   since_id?: number;
+}
+
+// --- rate-confirmation tracking -------------------------------------------
+// Mirrors app/api/schemas.py's LogisticsCompanyOut/DriverOut/DispatcherOut/
+// BrokerContactOut/RateConOut. LogisticsCompanyOut wraps the `Broker` DB model
+// (same entity as the safety-check flow above); BrokerContact is the individual
+// person there, distinct from that.
+
+export interface LogisticsCompany {
+  id: number;
+  mc_number: string | null;
+  dot_number: string | null;
+  name: string | null;
+  phone: string | null;
+  email: string | null;
+  address: string | null;
+  fmcsa_authority_status: string | null;
+  fmcsa_safety_rating: string | null;
+  is_dnu: boolean;
+  is_bad_broker: boolean;
+  dnu_reason: string | null;
+  status: string | null;
+  notes: string | null;
+  factoring_grade: string | null;
+  loads_made_count: number | null;
+  rts_checked_at: string | null;
+  load_count: number;
+  avg_rpm_7d: number | null;
+  created_at: string;
+}
+
+export interface Driver {
+  id: number;
+  carrier_id: number;
+  carrier_name: string | null;
+  name: string;
+  phone: string | null;
+  truck_number: string | null;
+  trailer_number: string | null;
+  notes: string | null;
+  load_count: number;
+  avg_rpm_7d: number | null;
+  created_at: string;
+}
+
+export interface Dispatcher {
+  id: number;
+  carrier_id: number;
+  carrier_name: string | null;
+  name: string;
+  phone: string | null;
+  extension: string | null;
+  email: string | null;
+  load_count: number;
+  avg_rpm_7d: number | null;
+  created_at: string;
+}
+
+export interface BrokerContact {
+  id: number;
+  broker_id: number;
+  logistics_company_name: string | null;
+  name: string;
+  phone: string | null;
+  extension: string | null;
+  email: string | null;
+  load_count: number;
+  avg_rpm_7d: number | null;
+  created_at: string;
+}
+
+// "Load" in the rate-confirmation tracking feature — wraps the `RateCon` DB model.
+export interface RateCon {
+  id: number;
+  load_number: string | null;
+  carrier_id: number | null;
+  carrier_name: string | null;
+  broker_id: number | null;
+  logistics_company_name: string | null;
+  driver_id: number | null;
+  driver_name: string | null;
+  dispatcher_id: number | null;
+  dispatcher_name: string | null;
+  broker_contact_id: number | null;
+  broker_contact_name: string | null;
+  truck_number: string | null;
+  trailer_number: string | null;
+  origin: string | null;
+  destination: string | null;
+  pickup_date: string | null;
+  delivery_date: string | null;
+  commodity: string | null;
+  weight_lbs: number | null;
+  equipment_type: string | null;
+  appointment_type: string | null;
+  notes: string | null;
+  rate: string | null;
+  miles: number | null;
+  rate_per_mile: string | null;
+  source_filename: string | null;
+  created_at: string;
+}
+
+export interface RateConFilters {
+  logistics_company?: string;
+  broker_contact?: string;
+  dispatcher?: string;
+  driver?: string;
+  truck_number?: string;
+  trailer_number?: string;
+  carrier?: string;
+  carrier_id?: number;
+  broker_id?: number;
+  driver_id?: number;
+  dispatcher_id?: number;
+  broker_contact_id?: number;
+  date_from?: string;
+  date_to?: string;
 }

@@ -95,7 +95,28 @@ function BrokerCheckResultView({ result }: { result: BookingCheckResult }) {
           <span className="stat-label">Average rate</span>
           <span className="stat-value">{formatRate(result.avg_rate)}</span>
         </div>
+        <div className="stat">
+          <span className="stat-label">Status</span>
+          <span className="stat-value">{result.status ?? "—"}</span>
+        </div>
+        <div className="stat">
+          <span className="stat-label">Factoring grade</span>
+          <span className="stat-value">
+            {result.factoring_grade ?? "—"}
+            {!result.rts_checked_at && <span className="muted"> (not checked via RTS yet)</span>}
+          </span>
+        </div>
+        <div className="stat">
+          <span className="stat-label">Loads made (RTS)</span>
+          <span className="stat-value">{result.loads_made_count ?? "—"}</span>
+        </div>
       </div>
+
+      {result.notes && (
+        <p className="muted">
+          <strong>Notes:</strong> {result.notes}
+        </p>
+      )}
 
       <h3>Lane history</h3>
       {result.lane_history.length === 0 ? (

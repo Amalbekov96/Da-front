@@ -4,8 +4,13 @@ import { useAuth } from "./auth/AuthContext";
 import { BrokerCheckPanel } from "./components/BrokerCheckPanel";
 import { LoginPage } from "./components/LoginPage";
 import { AppShell } from "./layout/AppShell";
+import { BrokerContactsPage } from "./pages/BrokerContactsPage";
+import { DispatchersPage } from "./pages/DispatchersPage";
+import { DriversPage } from "./pages/DriversPage";
 import { LoadBoardPage } from "./pages/LoadBoardPage";
+import { LogisticsCompaniesPage } from "./pages/LogisticsCompaniesPage";
 import { McsPage } from "./pages/McsPage";
+import { RateConsPage } from "./pages/RateConsPage";
 import { SourcesPage } from "./pages/SourcesPage";
 import { TelegramDialogsPage } from "./pages/TelegramDialogsPage";
 import { UsersPage } from "./pages/UsersPage";
@@ -33,6 +38,13 @@ export default function App() {
         <Route path="/broker-check" element={<BrokerCheckPanel />} />
         {hasPermission(user.role, "users.view") && <Route path="/users" element={<UsersPage />} />}
         {hasPermission(user.role, "mcs.view_all") && <Route path="/mcs" element={<McsPage />} />}
+        {hasPermission(user.role, "ratecons.manage") && (
+          <Route path="/logistics-companies" element={<LogisticsCompaniesPage />} />
+        )}
+        {hasPermission(user.role, "ratecons.manage") && <Route path="/drivers" element={<DriversPage />} />}
+        {hasPermission(user.role, "ratecons.manage") && <Route path="/dispatchers" element={<DispatchersPage />} />}
+        {hasPermission(user.role, "ratecons.manage") && <Route path="/brokers" element={<BrokerContactsPage />} />}
+        {hasPermission(user.role, "ratecons.manage") && <Route path="/loads-history" element={<RateConsPage />} />}
         {hasPermission(user.role, "sources.view_all") && <Route path="/sources" element={<SourcesPage />} />}
         {hasPermission(user.role, "telegram_dialogs.manage") && (
           <Route path="/telegram-groups" element={<TelegramDialogsPage />} />

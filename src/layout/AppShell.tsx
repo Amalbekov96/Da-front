@@ -11,7 +11,12 @@ export function AppShell() {
     { to: "/", label: "Load Board", show: true },
     { to: "/broker-check", label: "Broker Check", show: true },
     { to: "/users", label: "Users", show: hasPermission(user.role, "users.view") },
-    { to: "/mcs", label: "MCs", show: hasPermission(user.role, "mcs.view_all") },
+    { to: "/mcs", label: "Carriers", show: hasPermission(user.role, "mcs.view_all") },
+    { to: "/logistics-companies", label: "Logistics Companies", show: hasPermission(user.role, "ratecons.manage") },
+    { to: "/drivers", label: "Drivers", show: hasPermission(user.role, "ratecons.manage") },
+    { to: "/dispatchers", label: "Dispatchers", show: hasPermission(user.role, "ratecons.manage") },
+    { to: "/brokers", label: "Brokers", show: hasPermission(user.role, "ratecons.manage") },
+    { to: "/loads-history", label: "Loads", show: hasPermission(user.role, "ratecons.manage") },
     { to: "/sources", label: "Sources", show: hasPermission(user.role, "sources.view_all") },
     { to: "/telegram-groups", label: "Telegram Groups", show: hasPermission(user.role, "telegram_dialogs.manage") },
   ];

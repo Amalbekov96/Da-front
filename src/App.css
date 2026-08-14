@@ -372,6 +372,22 @@
   color: var(--text-h);
 }
 
+.search-input {
+  font: inherit;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text-h);
+  width: 100%;
+  max-width: 360px;
+  margin-top: 12px;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
 .data-table {
   width: 100%;
   font-size: 14px;

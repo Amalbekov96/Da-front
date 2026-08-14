@@ -1,9 +1,15 @@
 import type {
   AuthResponse,
   BookingCheckResult,
+  BrokerContact,
+  Dispatcher,
+  Driver,
   LoadFilters,
   LoadRow,
+  LogisticsCompany,
   Mc,
+  RateCon,
+  RateConFilters,
   Search,
   SearchRequest,
   Source,
@@ -123,14 +129,20 @@ export function listMcs(): Promise<Mc[]> {
   return request("/mcs");
 }
 
-export function createMc(body: { mc_number: string; name?: string; dot_number?: string }): Promise<Mc> {
+export interface McRequest {
+  mc_number: string;
+  name?: string;
+  dot_number?: string;
+  phone?: string;
+  email?: string;
+  notes?: string;
+}
+
+export function createMc(body: McRequest): Promise<Mc> {
   return request("/mcs", { method: "POST", body: JSON.stringify(body) });
 }
 
-export function updateMc(
-  id: number,
-  body: { mc_number: string; name?: string; dot_number?: string },
-): Promise<Mc> {
+export function updateMc(id: number, body: McRequest): Promise<Mc> {
   return request(`/mcs/${id}`, { method: "PATCH", body: JSON.stringify(body) });
 }
 
@@ -188,4 +200,123 @@ export function fetchTelegramDialogs(): Promise<TelegramDialog[]> {
 
 export function deleteTelegramDialog(id: number): Promise<void> {
   return request(`/telegram-dialogs/${id}`, { method: "DELETE" });
+}
+
+// --- logistics companies ("Broker" DB model) --------------------------------
+
+export function listLogisticsCompanies(q?: string): Promise<LogisticsCompany[]> {
+  return request(`/logistics-companies${query({ q })}`);
+}
+
+export interface UpdateLogisticsCompanyRequest {
+  name?: string;
+  mc_number?: string;
+  dot_number?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  status?: string;
+  notes?: string;
+  is_dnu?: boolean;
+  is_bad_broker?: boolean;
+  dnu_reason?: string;
+  factoring_grade?: string;
+  loads_made_count?: number;
+}
+
+export function updateLogisticsCompany(id: number, body: UpdateLogisticsCompanyRequest): Promise<LogisticsCompany> {
+  return request(`/logistics-companies/${id}`, { method: "PATCH", body: JSON.stringify(body) });
+}
+
+// --- drivers ---------------------------------------------------------------
+
+export interface DriverRequest {
+  carrier_id: number;
+  name: string;
+  phone?: string | null;
+  truck_number?: string | null;
+  trailer_number?: string | null;
+  notes?: string | null;
+}
+
+export function listDrivers(params: { q?: string; carrier_id?: number } = {}): Promise<Driver[]> {
+  return request(`/drivers${query(params)}`);
+}
+
+export function createDriver(body: DriverRequest): Promise<Driver> {
+  return request("/drivers", { method: "POST", body: JSON.stringify(body) });
+}
+
+export function updateDriver(id: number, body: DriverRequest): Promise<Driver> {
+  return request(`/drivers/${id}`, { method: "PATCH", body: JSON.stringify(body) });
+}
+
+export function deleteDriver(id: number): Promise<void> {
+  return request(`/drivers/${id}`, { method: "DELETE" });
+}
+
+// --- dispatchers -------------------------------------------------------------
+
+export interface DispatcherRequest {
+  carrier_id: number;
+  name: string;
+  phone?: string | null;
+  extension?: string | null;
+  email?: string | null;
+}
+
+export function listDispatchers(params: { q?: string; carrier_id?: number } = {}): Promise<Dispatcher[]> {
+  return request(`/dispatchers${query(params)}`);
+}
+
+export function createDispatcher(body: DispatcherRequest): Promise<Dispatcher> {
+  return request("/dispatchers", { method: "POST", body: JSON.stringify(body) });
+}
+
+export function updateDispatcher(id: number, body: DispatcherRequest): Promise<Dispatcher> {
+  return request(`/dispatchers/${id}`, { method: "PATCH", body: JSON.stringify(body) });
+}
+
+export function deleteDispatcher(id: number): Promise<void> {
+  return request(`/dispatchers/${id}`, { method: "DELETE" });
+}
+
+// --- broker contacts ---------------------------------------------------------
+
+export interface BrokerContactRequest {
+  broker_id: number;
+  name: string;
+  phone?: string | null;
+  extension?: string | null;
+  email?: string | null;
+}
+
+export function listBrokerContacts(params: { q?: string; broker_id?: number } = {}): Promise<BrokerContact[]> {
+  return request(`/broker-contacts${query(params)}`);
+}
+
+export function createBrokerContact(body: BrokerContactRequest): Promise<BrokerContact> {
+  return request("/broker-contacts", { method: "POST", body: JSON.stringify(body) });
+}
+
+export function updateBrokerContact(id: number, body: BrokerContactRequest): Promise<BrokerContact> {
+  return request(`/broker-contacts/${id}`, { method: "PATCH", body: JSON.stringify(body) });
+}
+
+export function deleteBrokerContact(id: number): Promise<void> {
+  return request(`/broker-contacts/${id}`, { method: "DELETE" });
+}
+
+// --- rate confirmations ("Loads") ---------------------------------------------
+
+export function listRateCons(filters: RateConFilters = {}): Promise<RateCon[]> {
+  return request(`/ratecons${query(filters as Record<string, string | number | undefined>)}`);
+}
+
+export function updateRateCon(id: number, body: Partial<RateCon>): Promise<RateCon> {
+  return request(`/ratecons/${id}`, { method: "PATCH", body: JSON.stringify(body) });
+}
+
+export function deleteRateCon(id: number): Promise<void> {
+  return request(`/ratecons/${id}`, { method: "DELETE" });
 }

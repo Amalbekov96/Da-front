@@ -1,9 +1,11 @@
 import type {
+  AppSettings,
   AuthResponse,
   BookingCheckResult,
   BrokerContact,
   Dispatcher,
   Driver,
+  LlmProvider,
   LoadFilters,
   LoadRow,
   LogisticsCompany,
@@ -319,4 +321,14 @@ export function updateRateCon(id: number, body: Partial<RateCon>): Promise<RateC
 
 export function deleteRateCon(id: number): Promise<void> {
   return request(`/ratecons/${id}`, { method: "DELETE" });
+}
+
+// --- app settings (admin-only) ------------------------------------------------
+
+export function getAppSettings(): Promise<AppSettings> {
+  return request("/app-settings");
+}
+
+export function updateAppSettings(llmProvider: LlmProvider): Promise<AppSettings> {
+  return request("/app-settings", { method: "PATCH", body: JSON.stringify({ llm_provider: llmProvider }) });
 }

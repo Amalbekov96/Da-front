@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { createSearch, deleteSearch, listLoads, listMcs, listSearches, listSources } from "../api/client";
+import { createSearch, deleteSearch, getAppSettings, listLoads, listMcs, listSearches, listSources, updateAppSettings } from "../api/client";
 import { ApiError } from "../api/client";
-import { EQUIPMENT_LABELS, EQUIPMENT_TYPES, type LoadRow, type Mc, type Search, type Source } from "../api/types";
+import { EQUIPMENT_LABELS, EQUIPMENT_TYPES, type AppSettings, type LlmProvider, type LoadRow, type Mc, type Search, type Source } from "../api/types";
+import { useAuth } from "../auth/AuthContext";
 import { MultiSelectDropdown } from "../components/MultiSelectDropdown";
+import { hasPermission } from "../permissions";
 
 const POLL_INTERVAL_MS = 7000;
 const HIGHLIGHT_MS = 6000;
@@ -32,6 +34,62 @@ function renderPostedBy(load: LoadRow) {
     <a href={href} target="_blank" rel="noopener noreferrer" className="posted-by-link">
       {load.posted_by}
     </a>
+  );
+}
+
+function LlmProviderToggle() {
+  const { user } = useAuth();
+  const [appSettings, setAppSettings] = useState<AppSettings | null>(null);
+  const [switching, setSwitching] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const canManage = user ? hasPermission(user.role, "app_settings.manage") : false;
+
+  useEffect(() => {
+    if (!canManage) return;
+    getAppSettings()
+      .then(setAppSettings)
+      .catch(() => undefined);
+  }, [canManage]);
+
+  if (!canManage || !appSettings) return null;
+
+  async function handleSwitch(provider: LlmProvider) {
+    if (provider === appSettings!.llm_provider) return;
+    setSwitching(true);
+    setError(null);
+    try {
+      setAppSettings(await updateAppSettings(provider));
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Couldn't switch provider");
+    } finally {
+      setSwitching(false);
+    }
+  }
+
+  return (
+    <section className="panel llm-provider-panel">
+      <span className="muted">Extraction model</span>
+      <div className="llm-provider-toggle">
+        <button
+          type="button"
+          className={`llm-provider-option${appSettings.llm_provider === "claude" ? " active" : ""}`}
+          disabled={switching}
+          onClick={() => handleSwitch("claude")}
+        >
+          Claude <span className="muted">({appSettings.claude_model})</span>
+        </button>
+        <button
+          type="button"
+          className={`llm-provider-option${appSettings.llm_provider === "gpt" ? " active" : ""}`}
+          disabled={switching}
+          onClick={() => handleSwitch("gpt")}
+        >
+          GPT <span className="muted">({appSettings.gpt_model})</span>
+        </button>
+      </div>
+      {error && <div className="alert alert-error">{error}</div>}
+    </section>
   );
 }
 
@@ -170,6 +228,7 @@ export function LoadBoardPage() {
 
   return (
     <div className="load-board">
+      <LlmProviderToggle />
       <section className="panel searches-panel">
         <div className="searches-row">
           {activeSearches.map((s) => (

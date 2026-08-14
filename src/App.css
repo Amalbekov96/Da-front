@@ -669,6 +669,40 @@
   font-weight: 600;
 }
 
+.llm-provider-panel {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 20px;
+}
+
+.llm-provider-toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.llm-provider-option {
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  font-size: 13px;
+  color: var(--text-h);
+  cursor: pointer;
+}
+
+.llm-provider-option:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.llm-provider-option.active {
+  background: var(--accent-bg);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
 .load-table {
   width: 100%;
   font-size: 14px;

@@ -287,3 +287,13 @@ export interface RateConFilters {
   date_from?: string;
   date_to?: string;
 }
+
+// Mirrors app/api/schemas.py AppSettingsOut — admin-only, switches which LLM powers
+// every extraction (Load Board image/text, rate-con PDFs), no restart needed.
+export type LlmProvider = "claude" | "gpt";
+
+export interface AppSettings {
+  llm_provider: LlmProvider;
+  claude_model: string;
+  gpt_model: string;
+}

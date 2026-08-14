@@ -21,7 +21,8 @@ export type Permission =
   | "searches.view_all"
   | "loads.view"
   | "telegram_dialogs.manage"
-  | "ratecons.manage";
+  | "ratecons.manage"
+  | "app_settings.manage";
 
 const ALL_PERMISSIONS: Permission[] = [
   "users.view",
@@ -42,6 +43,7 @@ const ALL_PERMISSIONS: Permission[] = [
   "loads.view",
   "telegram_dialogs.manage",
   "ratecons.manage",
+  "app_settings.manage",
 ];
 
 const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
